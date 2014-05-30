@@ -58,6 +58,7 @@ public class CacheViewerJF extends CycleViewerJF{
         tblCacheViewer = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
 
         tblCacheViewer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

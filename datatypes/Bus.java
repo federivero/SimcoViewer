@@ -4,6 +4,7 @@
  */
 package simcoviewer.datatypes;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,17 +13,37 @@ import java.util.Map;
  */
 public class Bus {
     
+    private Long id;
     private int dataWidth;
+    private String name;
     
     private Map<Long, BusStatus> busDataPerCycle;
     
     public Bus(){
-        
+        busDataPerCycle = new HashMap();
     }
 
-    public void addBusStatus(long cycle, BusStatus status){
-        
+    public void updateBusStatus(long cycle, int messageType, long address, String data){
+        BusStatus currentUpdate;
+        /* if there's a current entry for this cycle, get it and update it. Otherwise create new */
+        if (busDataPerCycle.containsKey(cycle)){
+            currentUpdate = busDataPerCycle.get(cycle);
+        }else{
+            currentUpdate = new BusStatus();
+            busDataPerCycle.put(cycle, currentUpdate);
+        }
+        if (messageType != -1){
+            MessageType mType = Message.parseMessageType(messageType);
+            currentUpdate.setMessageType(mType);
+        }
+        if (address != -1){
+            currentUpdate.setAddress(address);
+        }
+        if (data != null){
+            currentUpdate.setData(data);
+        }
     }
+
     /**
      * @return the dataWidth
      */
@@ -49,6 +70,34 @@ public class Bus {
      */
     public void setBusDataPerCycle(Map<Long, BusStatus> busDataPerCycle) {
         this.busDataPerCycle = busDataPerCycle;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
     
     

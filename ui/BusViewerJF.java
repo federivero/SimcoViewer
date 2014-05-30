@@ -10,15 +10,17 @@ import simcoviewer.datatypes.Bus;
  *
  * @author fede
  */
-public class BusViewerJF extends javax.swing.JFrame {
+public class BusViewerJF extends CycleViewerJF {
 
     Bus bus;
     
     /**
      * Creates new form BusViewerJF
      */
-    public BusViewerJF() {
+    public BusViewerJF(Bus bus) {
         initComponents();
+        this.setTitle(bus.getName());
+        this.bus = bus;
     }
 
     /**
@@ -30,40 +32,111 @@ public class BusViewerJF extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblBusData = new javax.swing.JTable();
+        txtOwnerName = new javax.swing.JTextField();
+        lblOwner = new javax.swing.JLabel();
+        txtAddress = new javax.swing.JTextField();
+        lblData = new javax.swing.JLabel();
+        lblMessageType = new javax.swing.JLabel();
+        txtMessageType = new javax.swing.JTextField();
+        lblAddress = new javax.swing.JLabel();
+        txtData = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
 
-        tblBusData.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        txtOwnerName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtOwnerNameActionPerformed(evt);
             }
-        ));
-        jScrollPane1.setViewportView(tblBusData);
+        });
+
+        lblOwner.setText("Owner:");
+
+        lblData.setText("Data:");
+
+        lblMessageType.setText("Message Type:");
+
+        txtMessageType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMessageTypeActionPerformed(evt);
+            }
+        });
+
+        lblAddress.setText("Address:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblAddress)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblMessageType)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(40, 40, 40)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblOwner)
+                                .addGap(47, 47, 47)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtOwnerName)
+                            .addComponent(txtMessageType)
+                            .addComponent(txtAddress)
+                            .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblOwner)
+                    .addComponent(txtOwnerName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMessageType)
+                    .addComponent(txtMessageType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblAddress)
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblData)
+                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtOwnerNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtOwnerNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtOwnerNameActionPerformed
+
+    private void txtMessageTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMessageTypeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMessageTypeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblBusData;
+    private javax.swing.JLabel lblAddress;
+    private javax.swing.JLabel lblData;
+    private javax.swing.JLabel lblMessageType;
+    private javax.swing.JLabel lblOwner;
+    private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextField txtData;
+    private javax.swing.JTextField txtMessageType;
+    private javax.swing.JTextField txtOwnerName;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void setCurrentCycle(long currentCycle) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
