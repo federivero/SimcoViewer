@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package simcoviewer.datatypes;
+package simcoviewer.datatypes.enumerates;
 
 /**
  *
  * @author fede
  */
-class MessageDispatcher {
-    
+public enum CacheLineState {
+    INVALID, MODIFIED, EXCLUSIVE, SHARED
 }

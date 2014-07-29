@@ -20,9 +20,12 @@ import simcoviewer.datatypes.Cache;
 import simcoviewer.datatypes.CacheLineEntry;
 import simcoviewer.datatypes.MemoryDevice;
 import simcoviewer.datatypes.processor.Processor;
+import simcoviewer.datatypes.processor.Register;
+import simcoviewer.datatypes.processor.RegisterType;
 import simcoviewer.ui.tablemodels.BusTableModel;
 import simcoviewer.ui.tablemodels.MemoryHierarchyTableModel;
 import simcoviewer.ui.tablemodels.ProcessorTableModel;
+import simcoviewer.utls.Conversions;
 
 /**
  *
@@ -37,6 +40,7 @@ public class MainJF extends javax.swing.JFrame {
     private static final String LINE_START_BUS = "Bus-";
     private static final String LINE_START_BUS_CHANGE = "BusMessage-";
     private static final String LINE_START_PROCESSOR = "Processor-";
+    private static final String LINE_START_REGISTER_DEFINITION = "Register-";
     private static final String LINE_START_REGISTER_VALUE_UPDATE = "RegisterValue-";
     private static final String LINE_START_PC_VALUE_UPDATE = "PCValue-";
     private static final String LINE_START_IR_VALUE_UPDATE = "InstructionRegisterValue-";
@@ -67,6 +71,7 @@ public class MainJF extends javax.swing.JFrame {
     private static final String BUS_STATUS_CHANGE_MESSAGE_TYPE = "messageType";
     private static final String BUS_STATUS_CHANGE_ADDRESS = "address";
     private static final String BUS_STATUS_CHANGE_DATA = "data";
+    private static final String BUS_STATUS_CHANGE_SUBMITTER = "submitter";
     
     // Processor properties
     private static final String PROCESSOR_PROPERTY_PROCESSOR_TYPE = "type";
@@ -103,6 +108,8 @@ public class MainJF extends javax.swing.JFrame {
     // Processor Containers
     private List<Processor> processors;
     private Map<Long,Processor> processorMap; // maps ID's to processors
+    // MessageDispatcherNames map
+    private Map<Long,String> dispatcherNames;
     
     // Cycle view variables
     private long maxCycle;
@@ -123,6 +130,7 @@ public class MainJF extends javax.swing.JFrame {
         busesMap = new HashMap();
         processors = new ArrayList();
         processorMap = new HashMap();
+        dispatcherNames = new HashMap();
         
         initComponents();
         currentCycle = -1;
@@ -161,6 +169,7 @@ public class MainJF extends javax.swing.JFrame {
                 }
                 memoryDevices.add(cache);
                 memoryDeviceMap.put(cache.getId(), cache);
+                dispatcherNames.put(cache.getId(), cache.getName());
                 
             }else if (line.startsWith(LINE_START_CACHE_LINE_STATUS)){ // CacheLine status change
                 
@@ -184,7 +193,8 @@ public class MainJF extends javax.swing.JFrame {
                             lineEntry.setStateFromInt(Integer.parseInt(propertyValue));
                             break;
                         case CACHE_LINE_CHANGE_PROPERTY_DATA:
-                            lineEntry.setData(propertyValue);
+                            // Data comes in hexadecimal format
+                            lineEntry.setData(Conversions.hexToASCII(propertyValue));
                             break;
                     }
                 }
@@ -230,6 +240,13 @@ public class MainJF extends javax.swing.JFrame {
                         Processor proc = iterProcessors.next();
                         proc.copyProcessorStatusFromLastCycle(currentCycle);
                     }
+                    Iterator<Bus> iterBuses = buses.iterator();
+                    while(iterBuses.hasNext()){
+                        Bus bus = iterBuses.next();
+                        bus.addBusStatusIfEmpty(currentCycle);
+                    }
+                    
+                    
                 }
                 currentCycle = Long.parseLong(line.split(" ")[1]);
                 if (currentCycle > maxCycle){
@@ -244,6 +261,7 @@ public class MainJF extends javax.swing.JFrame {
                 long busId = -1, address = -1;
                 int messageType = -1;
                 String data = null;
+                String submitterName = null;
                 for (int i = 1; i < props.length; i++){
                     propertyName = props[i].split(":")[0];
                     propertyValue = props[i].split(":")[1];
@@ -258,7 +276,10 @@ public class MainJF extends javax.swing.JFrame {
                             address = Long.parseLong(propertyValue);
                             break;
                         case BUS_STATUS_CHANGE_DATA:
-                            data = propertyValue;
+                            data = Conversions.hexToASCII(propertyValue);
+                            break;
+                        case BUS_STATUS_CHANGE_SUBMITTER:
+                            submitterName = dispatcherNames.get(Long.parseLong(propertyValue));
                             break;
                         default:
                             // Message Id ??
@@ -266,7 +287,7 @@ public class MainJF extends javax.swing.JFrame {
                     }
                 }
                 Bus bus = (Bus) busesMap.get(busId);
-                bus.updateBusStatus(currentCycle, messageType,address,data);
+                bus.updateBusStatus(currentCycle, messageType,address,data,submitterName);
                 
             }else if (line.startsWith(LINE_START_PROCESSOR)){
 
@@ -299,11 +320,14 @@ public class MainJF extends javax.swing.JFrame {
                 processor.setProcessorType(processorType);
                 processors.add(processor);
                 processorMap.put(id, processor);
-            } else if (line.startsWith(LINE_START_REGISTER_VALUE_UPDATE)){
-                // Programmable register update line
-                // TODO
+                dispatcherNames.put(id, processorName);
+            } else if (line.startsWith(LINE_START_REGISTER_DEFINITION)){
+                // Trace new register file 
                 String[] props = line.split("-");
                 long processorId = -1;
+                int registerType = -1;
+                int registerNumber = -1;
+                long id = -1;
                 for (int i = 1; i < props.length; i++){
                     propertyName = props[i].split(":")[0];
                     propertyValue = props[i].split(":")[1];
@@ -311,13 +335,62 @@ public class MainJF extends javax.swing.JFrame {
                         case REGISTER_PROPERTY_PROCESSOR_ID:
                             processorId = Long.parseLong(propertyValue);
                             break;
-                            // TODO
+                        case REGISTER_PROPERTY_REGISTER_NUMBER:
+                            registerNumber = Integer.parseInt(propertyValue);
+                            break;
+                        case REGISTER_PROPERTY_REGISTER_TYPE:
+                            registerType = Integer.parseInt(propertyValue);
+                            break;
                         default:
                             // Message Id ??
                             break;
                     }
                 }
-
+                // TODO: Instance specific processor subclass when more than one available
+                Processor processor = processorMap.get(processorId);
+                Register reg = new Register();
+                if (registerType == 0){
+                    reg.setRegType(RegisterType.REGISTER_TYPE_INT);
+                }else if (registerType == 1){
+                    reg.setRegType(RegisterType.REGISTER_TYPE_FP);
+                }else{
+                    throw new RuntimeException("Unsupported register type");
+                }
+                reg.setRegisterNumber(registerNumber);
+                reg.setRegTypeAsInt(registerType);
+                processor.addRegister(reg);
+            }else if (line.startsWith(LINE_START_REGISTER_VALUE_UPDATE)){
+                // Programmable register update line
+                // TODO
+                String[] props = line.split("-");
+                long processorId = -1;
+                int registerNumber = -1;
+                int registerType = -1;
+                String registerValue = null;
+                for (int i = 1; i < props.length; i++){
+                    propertyName = props[i].split(":")[0];
+                    propertyValue = props[i].split(":")[1];
+                    switch (propertyName) {
+                        case REGISTER_PROPERTY_PROCESSOR_ID:
+                            processorId = Long.parseLong(propertyValue);
+                            break;
+                        case REGISTER_PROPERTY_REGISTER_NUMBER:
+                            registerNumber = Integer.parseInt(propertyValue);
+                            break;
+                        case REGISTER_PROPERTY_REGISTER_VALUE:
+                            registerValue = propertyValue;
+                            break;
+                        case REGISTER_PROPERTY_REGISTER_TYPE:
+                            registerType = Integer.parseInt(propertyValue);
+                            break;
+                        default:
+                            // Message Id ??
+                            break;
+                    }
+                }
+                Processor processor = processorMap.get(processorId);
+                processor.addRegisterValueEntry(currentCycle, registerNumber, registerType, registerValue);
+                
             } else if (line.startsWith(LINE_START_PC_VALUE_UPDATE)){
                 // Program counter update line
                 String[] props = line.split("-");
@@ -353,7 +426,7 @@ public class MainJF extends javax.swing.JFrame {
                             processorId = Long.parseLong(propertyValue);
                             break;
                         case IR_PROPERTY_IR_VALUE:
-                            irValue = propertyValue;
+                            irValue = Conversions.hexToASCII(propertyValue);
                             break;
                         default:
                             break;
@@ -479,8 +552,7 @@ public class MainJF extends javax.swing.JFrame {
             pnlMemoryDevicesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMemoryDevicesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
         );
 
         tabPaneCompSystem.addTab("MemoryDevices", pnlMemoryDevices);
@@ -501,8 +573,7 @@ public class MainJF extends javax.swing.JFrame {
             pnlBusesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBusesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
         );
 
         tabPaneCompSystem.addTab("Buses", pnlBuses);
@@ -612,8 +683,7 @@ public class MainJF extends javax.swing.JFrame {
                             .addComponent(txtTargetCycle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblTargetCycle))))
                 .addGap(11, 11, 11)
-                .addComponent(tabPaneCompSystem, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(tabPaneCompSystem, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE))
         );
 
         pack();

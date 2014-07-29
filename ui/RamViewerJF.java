@@ -77,4 +77,9 @@ public class RamViewerJF extends CycleViewerJF {
     private javax.swing.JTable tblMemoryContent;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void dataFormatValueChanged() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

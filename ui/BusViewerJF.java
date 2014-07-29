@@ -5,6 +5,13 @@
 package simcoviewer.ui;
 
 import simcoviewer.datatypes.Bus;
+import simcoviewer.datatypes.BusStatus;
+import simcoviewer.datatypes.enumerates.DataFormat;
+import static simcoviewer.datatypes.enumerates.DataFormat.ASCII;
+import static simcoviewer.datatypes.enumerates.DataFormat.BINARY;
+import static simcoviewer.datatypes.enumerates.DataFormat.HEXADECIMAL;
+import simcoviewer.datatypes.enumerates.MessageType;
+import simcoviewer.utls.Conversions;
 
 /**
  *
@@ -13,6 +20,7 @@ import simcoviewer.datatypes.Bus;
 public class BusViewerJF extends CycleViewerJF {
 
     Bus bus;
+    long currentCycle;
     
     /**
      * Creates new form BusViewerJF
@@ -21,6 +29,7 @@ public class BusViewerJF extends CycleViewerJF {
         initComponents();
         this.setTitle(bus.getName());
         this.bus = bus;
+        currentCycle = -1;
     }
 
     /**
@@ -44,6 +53,7 @@ public class BusViewerJF extends CycleViewerJF {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
 
+        txtOwnerName.setEditable(false);
         txtOwnerName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtOwnerNameActionPerformed(evt);
@@ -52,10 +62,13 @@ public class BusViewerJF extends CycleViewerJF {
 
         lblOwner.setText("Owner:");
 
+        txtAddress.setEditable(false);
+
         lblData.setText("Data:");
 
         lblMessageType.setText("Message Type:");
 
+        txtMessageType.setEditable(false);
         txtMessageType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMessageTypeActionPerformed(evt);
@@ -63,6 +76,8 @@ public class BusViewerJF extends CycleViewerJF {
         });
 
         lblAddress.setText("Address:");
+
+        txtData.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -86,9 +101,9 @@ public class BusViewerJF extends CycleViewerJF {
                                 .addGap(47, 47, 47)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtOwnerName)
-                            .addComponent(txtMessageType)
                             .addComponent(txtAddress)
-                            .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtMessageType, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                            .addComponent(txtData))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -137,6 +152,51 @@ public class BusViewerJF extends CycleViewerJF {
 
     @Override
     public void setCurrentCycle(long currentCycle) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.currentCycle = currentCycle;
+        BusStatus status = bus.getBusStatus(currentCycle);
+        if (status.getAddress() != -1){
+            txtAddress.setText("0x"+Long.toHexString(status.getAddress()));
+            txtAddress.setEnabled(true);
+        }else{
+            txtAddress.setText("");
+            txtAddress.setEnabled(false);
+        }
+        if (status.getData() != null){
+            switch(dataFormat){
+                    case ASCII:
+                        txtData.setText(status.getData());
+                        break;
+                    case BINARY:
+                        txtData.setText(Conversions.asciiToBinary(status.getData()));
+                        break;
+                    case HEXADECIMAL:
+                        txtData.setText(Conversions.asciiToHex(status.getData()));
+                        break;
+                
+            }
+            txtData.setEnabled(true);
+        }else{
+            txtData.setText("");
+            txtData.setEnabled(false);
+        }
+        if (status.getOwner()!= null){
+            txtOwnerName.setText(status.getOwner());
+            txtOwnerName.setEnabled(true);
+        }else{
+            txtOwnerName.setText("");
+            txtOwnerName.setEnabled(false);
+        }
+        if (status.getMessageType() != MessageType.NO_MESSAGE){
+            txtMessageType.setText(status.getMessageType().toString());
+            txtMessageType.setEnabled(true);
+        }else{
+            txtMessageType.setText("");
+            txtMessageType.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void dataFormatValueChanged() {
+        setCurrentCycle(currentCycle);
     }
 }

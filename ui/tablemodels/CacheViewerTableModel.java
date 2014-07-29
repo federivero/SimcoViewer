@@ -7,7 +7,9 @@ package simcoviewer.ui.tablemodels;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import simcoviewer.datatypes.CacheLineEntry;
-import simcoviewer.datatypes.CacheLineState;
+import simcoviewer.datatypes.enumerates.CacheLineState;
+import simcoviewer.datatypes.enumerates.DataFormat;
+import simcoviewer.utls.Conversions;
 
 /**
  *
@@ -16,9 +18,11 @@ import simcoviewer.datatypes.CacheLineState;
 public class CacheViewerTableModel extends AbstractTableModel{
     
     private List<CacheLineEntry> cacheLineList;
+    private DataFormat dataFormat;
     
     public CacheViewerTableModel(List<CacheLineEntry> list){
         cacheLineList = list;
+        dataFormat = DataFormat.ASCII;
     }
     
     @Override
@@ -42,7 +46,14 @@ public class CacheViewerTableModel extends AbstractTableModel{
             case 2:
                 return line.getState();
             case 3:
-                return line.getData();
+                switch(dataFormat){
+                    case ASCII:
+                        return line.getData();
+                    case BINARY:
+                        return Conversions.asciiToBinary(line.getData());
+                    case HEXADECIMAL:
+                        return Conversions.asciiToHex(line.getData());       
+                }
             default:
                 return null;
         }
@@ -92,5 +103,9 @@ public class CacheViewerTableModel extends AbstractTableModel{
      */
     public void setCacheLineList(List<CacheLineEntry> cacheLineList) {
         this.cacheLineList = cacheLineList;
+    }
+    
+    public void setDataFormat(DataFormat format){
+        this.dataFormat = format;
     }
 }

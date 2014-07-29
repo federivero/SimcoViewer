@@ -6,6 +6,7 @@ package simcoviewer.datatypes.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,8 @@ public class Processor {
    
     private Map<Long,ProcessorState> processorStatePerCycle;
     private List<Register> architectedRegisterFile;
+    private Map<Integer,Register> architectedRegisterFileMap;
+    
     private String processorType;
     private String processorName;
     private long id;
@@ -24,8 +27,25 @@ public class Processor {
     public Processor(){
         processorStatePerCycle = new HashMap();
         architectedRegisterFile = new ArrayList();
+        architectedRegisterFileMap = new HashMap();
+    }
+    
+    public List<Register> getArchitectedRegisterFile(){
+        return architectedRegisterFile;
     }
 
+    public void addRegisterValueEntry(long cycle, int registerNumber, int registerType, String registerValue){
+        Register r = architectedRegisterFileMap.get(registerNumber * 16 + registerType);
+        r.addCycleValue(cycle,registerValue);
+    }
+    
+    public void addRegister(Register reg){
+        architectedRegisterFile.add(reg);
+        // Assuming 16 types of registers
+        architectedRegisterFileMap.put(reg.getRegisterNumber() * 16 + reg.getRegTypeAsInt(), reg);
+        // TODO: collections.sort?
+    }
+    
     public ProcessorState getCycleProcessorState(long cycle){
         return processorStatePerCycle.get(cycle);
     }
@@ -42,6 +62,10 @@ public class Processor {
                 currentState.mergeState(lastCycleState);
             }
             
+        }
+        Iterator<Register> registerIterator = architectedRegisterFile.iterator();
+        while(registerIterator.hasNext()){
+            registerIterator.next().copyRegisterStateFromLastCycle(cycle);
         }
         
     }

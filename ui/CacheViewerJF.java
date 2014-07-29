@@ -21,7 +21,9 @@ public class CacheViewerJF extends CycleViewerJF{
         initComponents();
         this.cache = cache;
         this.setTitle(cache.getName());
-        tblCacheViewer.setModel(new CacheViewerTableModel(cache.getCacheLineList(currentCycle)));
+        CacheViewerTableModel cvtm = new CacheViewerTableModel(cache.getCacheLineList(currentCycle));
+        cvtm.setDataFormat(dataFormat);
+        tblCacheViewer.setModel(cvtm);
         // Line Number Size
         tblCacheViewer.getColumnModel().getColumn(0).setWidth(50);
         tblCacheViewer.getColumnModel().getColumn(0).setMinWidth(50);
@@ -97,4 +99,11 @@ public class CacheViewerJF extends CycleViewerJF{
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblCacheViewer;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void dataFormatValueChanged() {
+        CacheViewerTableModel cvtm = (CacheViewerTableModel) tblCacheViewer.getModel();
+        cvtm.setDataFormat(dataFormat);
+        cvtm.fireTableDataChanged();
+    }
 }

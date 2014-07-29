@@ -4,32 +4,52 @@
  */
 package simcoviewer.datatypes;
 
+import simcoviewer.datatypes.enumerates.MessageType;
+
 /**
  *
  * @author fede
  */
 public class BusStatus {
     
-    private MessageDispatcher owner;
+    private String owner;
     private String data;
     private long address;
     private MessageType messageType;
     
     public BusStatus(){
-        
+        data = null;
+        address = -1;
+        messageType = MessageType.NO_MESSAGE;
+        owner = null;
+    }
+    
+    void mergeState(BusStatus statusToMerge){
+        if (data == null){
+            this.data = statusToMerge.getData();
+        }
+        if (address == -1){
+            this.address = statusToMerge.getAddress();
+        }
+        if (owner == null){
+            this.owner = statusToMerge.getOwner();
+        }
+        if (messageType == MessageType.NO_MESSAGE){
+            messageType = statusToMerge.getMessageType();
+        }
     }
 
     /**
      * @return the owner
      */
-    public MessageDispatcher getOwner() {
+    public String getOwner() {
         return owner;
     }
 
     /**
      * @param owner the owner to set
      */
-    public void setOwner(MessageDispatcher owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 

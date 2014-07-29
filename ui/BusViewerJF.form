@@ -47,9 +47,9 @@
                       </Group>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="txtOwnerName" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txtMessageType" alignment="0" max="32767" attributes="0"/>
                           <Component id="txtAddress" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txtData" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                          <Component id="txtMessageType" alignment="0" pref="377" max="32767" attributes="0"/>
+                          <Component id="txtData" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -87,6 +87,9 @@
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="txtOwnerName">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtOwnerNameActionPerformed"/>
       </Events>
@@ -97,6 +100,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtAddress">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblData">
       <Properties>
@@ -109,6 +115,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtMessageType">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtMessageTypeActionPerformed"/>
       </Events>
@@ -119,6 +128,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtData">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

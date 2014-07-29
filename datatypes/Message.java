@@ -4,6 +4,8 @@
  */
 package simcoviewer.datatypes;
 
+import simcoviewer.datatypes.enumerates.MessageType;
+
 /**
  *
  * @author fede

@@ -4,8 +4,11 @@
  */
 package simcoviewer.ui;
 
+import javax.swing.JTable;
 import simcoviewer.datatypes.processor.Processor;
 import simcoviewer.datatypes.processor.ProcessorState;
+import simcoviewer.ui.tablemodels.RegisterFileViewerTableModel;
+import simcoviewer.utls.Conversions;
 
 /**
  *
@@ -14,29 +17,81 @@ import simcoviewer.datatypes.processor.ProcessorState;
 public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
 
     private Processor processor;
+    private long currentCycle;
     
     /**
      * Creates new form SiimpleUnpipedProcessorViewerJF
      */
-    public SimpleUnpipedProcessorViewerJF(Processor proc) {        
+    public SimpleUnpipedProcessorViewerJF(Processor proc) {
         initComponents();
         this.processor = proc;
         this.setTitle(processor.getProcessorName());
-        
+        currentCycle = 0;
+        RegisterFileViewerTableModel regTableModel = 
+                new RegisterFileViewerTableModel(processor.getArchitectedRegisterFile(), 0);
+        tblProgramableRegisters.setModel(regTableModel);
     }
 
     @Override
     public void setCurrentCycle(long currentCycle) {
         ProcessorState cycleState = processor.getCycleProcessorState(currentCycle);
+        this.currentCycle = currentCycle;
         if (cycleState != null){
             long pcValue = cycleState.getPcValue();
-            txtProgramCounter.setText(String.format("0x%08X", pcValue));
-            txtInstructionRegister.setText(cycleState.getIrValue());
+            setPCValue(pcValue);
+            setIRValue(cycleState.getIrValue());
             txtFlagsRegister.setText("Z = " + cycleState.getzFlag() + "    N =  " + cycleState.getnFlag()
                     + "    C = " + cycleState.getcFlag() + "    V = " + cycleState.getvFlag());
         }
+        ((RegisterFileViewerTableModel) tblProgramableRegisters.getModel()).setCycle(currentCycle);
+        ((RegisterFileViewerTableModel) tblProgramableRegisters.getModel()).fireTableDataChanged();
+        
+        tblProgramableRegisters.getColumnModel().getColumn(0).setWidth(95);
+        tblProgramableRegisters.getColumnModel().getColumn(0).setMinWidth(95);
+        tblProgramableRegisters.getColumnModel().getColumn(0).setMaxWidth(95);
+        tblProgramableRegisters.getColumnModel().getColumn(0).setResizable(false);
+        tblProgramableRegisters.getColumnModel().getColumn(1).setWidth(140);
+        tblProgramableRegisters.getColumnModel().getColumn(1).setMinWidth(140);
+        tblProgramableRegisters.getColumnModel().getColumn(1).setMaxWidth(140);
+        tblProgramableRegisters.getColumnModel().getColumn(1).setResizable(false);
+        tblProgramableRegisters.getColumnModel().getColumn(2).setWidth(130);
+        tblProgramableRegisters.getColumnModel().getColumn(2).setMinWidth(130);
+        tblProgramableRegisters.getColumnModel().getColumn(2).setMaxWidth(130);
+        tblProgramableRegisters.getColumnModel().getColumn(2).setResizable(false);
+        tblProgramableRegisters.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
     }
     
+    void setPCValue(long pcValue){
+        switch(dataFormat){
+            case ASCII:
+                txtProgramCounter.setText(Long.toString(pcValue));
+                break;
+            case BINARY:
+                txtProgramCounter.setText(Long.toBinaryString(pcValue));
+                break;
+            case HEXADECIMAL:
+                txtProgramCounter.setText(String.format("0x%08X", pcValue));
+                break;
+        }
+    }
+    
+    void setIRValue(String IRValue){
+        if (IRValue == null){
+            txtInstructionRegister.setText(IRValue);
+        }else{
+            switch(dataFormat){
+                case ASCII:
+                    txtInstructionRegister.setText(IRValue);
+                    break;
+                case BINARY:
+                    txtInstructionRegister.setText(Conversions.asciiToBinary(IRValue));
+                    break;
+                case HEXADECIMAL:
+                    txtInstructionRegister.setText(Conversions.asciiToHex(IRValue));
+                    break;
+            }
+        }   
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,13 +122,13 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
 
         tblProgramableRegisters.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane1.setViewportView(tblProgramableRegisters);
@@ -113,13 +168,12 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
                             .addComponent(txtInstructionRegister)
                             .addComponent(txtFlagsRegister)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblProgramableRegisters)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblProgramCounter)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtProgramCounter, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblProgramableRegisters)
+                        .addGap(0, 268, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblProgramCounter)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtProgramCounter)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -165,6 +219,12 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
     private javax.swing.JTextField txtInstructionRegister;
     private javax.swing.JTextField txtProgramCounter;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void dataFormatValueChanged() {
+        setCurrentCycle(currentCycle);
+    }
+    
 
     
 }

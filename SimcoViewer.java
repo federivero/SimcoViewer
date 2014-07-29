@@ -45,7 +45,7 @@ public class SimcoViewer {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainJF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>    
+        //</editor-fold>  
         try{        
             new MainJF(traceFileName).setVisible(true);
         }catch(FileNotFoundException e){

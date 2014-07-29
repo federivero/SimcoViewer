@@ -4,8 +4,10 @@
  */
 package simcoviewer.datatypes;
 
+import simcoviewer.datatypes.enumerates.MessageType;
 import java.util.HashMap;
 import java.util.Map;
+import simcoviewer.datatypes.processor.Register;
 
 /**
  *
@@ -23,7 +25,11 @@ public class Bus {
         busDataPerCycle = new HashMap();
     }
 
-    public void updateBusStatus(long cycle, int messageType, long address, String data){
+    public BusStatus getBusStatus(long cycle){
+        return busDataPerCycle.get(cycle);
+    }
+    
+    public void updateBusStatus(long cycle, int messageType, long address, String data, String submitterName){
         BusStatus currentUpdate;
         /* if there's a current entry for this cycle, get it and update it. Otherwise create new */
         if (busDataPerCycle.containsKey(cycle)){
@@ -42,8 +48,18 @@ public class Bus {
         if (data != null){
             currentUpdate.setData(data);
         }
+        if (submitterName != null){
+            currentUpdate.setOwner(submitterName);
+        }
     }
 
+    public void addBusStatusIfEmpty(long cycle){
+        if (!busDataPerCycle.containsKey(cycle)){
+            BusStatus lastCycleState = new BusStatus();
+            busDataPerCycle.put(cycle, lastCycleState);
+        }
+    }
+    
     /**
      * @return the dataWidth
      */
