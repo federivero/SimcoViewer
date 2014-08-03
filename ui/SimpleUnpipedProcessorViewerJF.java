@@ -40,6 +40,7 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
             long pcValue = cycleState.getPcValue();
             setPCValue(pcValue);
             setIRValue(cycleState.getIrValue());
+            txtCurrentStage.setText(cycleState.getCurrentStage().toString());
             txtFlagsRegister.setText("Z = " + cycleState.getzFlag() + "    N =  " + cycleState.getnFlag()
                     + "    C = " + cycleState.getcFlag() + "    V = " + cycleState.getvFlag());
         }
@@ -110,6 +111,8 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
         txtProgramCounter = new javax.swing.JTextField();
         lblProgramableRegisters = new javax.swing.JLabel();
         txtFlagsRegister = new javax.swing.JTextField();
+        lblCurrentStage = new javax.swing.JLabel();
+        txtCurrentStage = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -133,6 +136,7 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
         ));
         jScrollPane1.setViewportView(tblProgramableRegisters);
 
+        txtInstructionRegister.setEditable(false);
         txtInstructionRegister.setText("jTextField5");
         txtInstructionRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,6 +144,7 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
             }
         });
 
+        txtProgramCounter.setEditable(false);
         txtProgramCounter.setText("jTextField6");
         txtProgramCounter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -149,7 +154,13 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
 
         lblProgramableRegisters.setText("Programable Registers:");
 
+        txtFlagsRegister.setEditable(false);
         txtFlagsRegister.setText("jTextField1");
+
+        lblCurrentStage.setText("Current Stage:");
+
+        txtCurrentStage.setEditable(false);
+        txtCurrentStage.setText("jTextField1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -160,26 +171,34 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblInstructionRegister)
-                            .addComponent(lblFlagsRegister))
+                        .addComponent(lblFlagsRegister)
+                        .addGap(25, 25, 25)
+                        .addComponent(txtFlagsRegister))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblInstructionRegister)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtInstructionRegister)
-                            .addComponent(txtFlagsRegister)))
+                        .addComponent(txtInstructionRegister))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblProgramableRegisters)
-                        .addGap(0, 268, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblProgramCounter)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblProgramCounter)
+                            .addComponent(lblCurrentStage))
                         .addGap(18, 18, 18)
-                        .addComponent(txtProgramCounter)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtProgramCounter)
+                            .addComponent(txtCurrentStage))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCurrentStage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCurrentStage, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblProgramCounter)
                     .addComponent(txtProgramCounter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -189,13 +208,13 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
                     .addComponent(txtInstructionRegister, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFlagsRegister, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblFlagsRegister))
+                    .addComponent(lblFlagsRegister)
+                    .addComponent(txtFlagsRegister, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblProgramableRegisters)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -210,11 +229,13 @@ public class SimpleUnpipedProcessorViewerJF extends CycleViewerJF {
     }//GEN-LAST:event_txtProgramCounterActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCurrentStage;
     private javax.swing.JLabel lblFlagsRegister;
     private javax.swing.JLabel lblInstructionRegister;
     private javax.swing.JLabel lblProgramCounter;
     private javax.swing.JLabel lblProgramableRegisters;
     private javax.swing.JTable tblProgramableRegisters;
+    private javax.swing.JTextField txtCurrentStage;
     private javax.swing.JTextField txtFlagsRegister;
     private javax.swing.JTextField txtInstructionRegister;
     private javax.swing.JTextField txtProgramCounter;

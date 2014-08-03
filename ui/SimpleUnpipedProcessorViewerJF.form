@@ -29,24 +29,29 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane1" pref="380" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblInstructionRegister" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblFlagsRegister" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="lblFlagsRegister" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                      <Component id="txtFlagsRegister" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="lblInstructionRegister" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtInstructionRegister" max="32767" attributes="0"/>
-                          <Component id="txtFlagsRegister" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="txtInstructionRegister" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="lblProgramableRegisters" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="268" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="lblProgramCounter" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblProgramCounter" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblCurrentStage" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="txtProgramCounter" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="txtProgramCounter" max="32767" attributes="0"/>
+                          <Component id="txtCurrentStage" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -56,6 +61,11 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="txtCurrentStage" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblCurrentStage" alignment="1" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblProgramCounter" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -68,14 +78,14 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="txtFlagsRegister" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblFlagsRegister" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtFlagsRegister" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblProgramableRegisters" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="181" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -114,6 +124,7 @@
     </Container>
     <Component class="javax.swing.JTextField" name="txtInstructionRegister">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" value="jTextField5"/>
       </Properties>
       <Events>
@@ -122,6 +133,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtProgramCounter">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" value="jTextField6"/>
       </Properties>
       <Events>
@@ -135,6 +147,18 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtFlagsRegister">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value="jTextField1"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblCurrentStage">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Current Stage:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtCurrentStage">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" value="jTextField1"/>
       </Properties>
     </Component>

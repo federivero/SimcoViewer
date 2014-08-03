@@ -4,6 +4,8 @@
  */
 package simcoviewer.datatypes.processor;
 
+import simcoviewer.datatypes.enumerates.ProcessorStage;
+
 /**
  *
  * @author fede
@@ -20,6 +22,9 @@ public class ProcessorState {
     private int nFlag;
     private int cFlag;
     private int vFlag;
+  
+    // Current Stage
+    private ProcessorStage currentStage;
     
     public ProcessorState(){
         irValue = null;
@@ -28,26 +33,30 @@ public class ProcessorState {
         nFlag = -1;
         cFlag = -1;
         vFlag = -1;
+        currentStage = ProcessorStage.UNINITIALIZED;
     }
 
     public void mergeState(ProcessorState otherState){
-        if  (irValue == null){
-            irValue = otherState.getIrValue();
+        if  (getIrValue() == null){
+            setIrValue(otherState.getIrValue());
         }
-        if (pcValue == -1){
-            pcValue = otherState.getPcValue();
+        if (getPcValue() == -1){
+            setPcValue(otherState.getPcValue());
         }
-        if (zFlag == -1){
-            zFlag = otherState.getzFlag();
+        if (getzFlag() == -1){
+            setzFlag(otherState.getzFlag());
         }
-        if (nFlag == -1){
-            nFlag = otherState.getnFlag();
+        if (getnFlag() == -1){
+            setnFlag(otherState.getnFlag());
         }
-        if (cFlag == -1){
-            cFlag = otherState.getcFlag();
+        if (getcFlag() == -1){
+            setcFlag(otherState.getcFlag());
         }
-        if (vFlag == -1){
-            vFlag = otherState.getvFlag();
+        if (getvFlag() == -1){
+            setvFlag(otherState.getvFlag());
+        }
+        if (getCurrentStage() == ProcessorStage.UNINITIALIZED){
+            setCurrentStage(otherState.getCurrentStage());
         }
     }
     
@@ -133,6 +142,42 @@ public class ProcessorState {
      */
     public void setvFlag(int vFlag) {
         this.vFlag = vFlag;
+    }
+
+    /**
+     * @return the currentStage
+     */
+    public ProcessorStage getCurrentStage() {
+        return currentStage;
+    }
+
+    /**
+     * @param currentStage the currentStage to set
+     */
+    public void setCurrentStage(ProcessorStage currentStage) {
+        this.currentStage = currentStage;
+    }
+    
+    public void setCurrentStage(int step){
+        switch(step){
+            case 0:
+                currentStage = ProcessorStage.FETCH;
+                break;
+            case 1:
+                currentStage = ProcessorStage.DECODE;
+                break;
+            case 2:
+                currentStage = ProcessorStage.EXECUTE;
+                break;
+            case 3:
+                currentStage = ProcessorStage.WRITEBACK;
+                break;
+            case 4:
+                currentStage = ProcessorStage.IDLE;
+                break;
+            default:
+                break;
+        }
     }
     
 }

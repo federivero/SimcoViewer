@@ -70,6 +70,18 @@ public class Processor {
         
     }
     
+    public void addProcessorStep(int step, long cycle){
+        ProcessorState state;
+        if (processorStatePerCycle.containsKey(cycle)){
+            state = processorStatePerCycle.get(cycle);
+            state.setCurrentStage(step);
+        }else{
+            state = new ProcessorState();
+            state.setCurrentStage(step);
+            processorStatePerCycle.put(cycle, state);
+        }
+    }
+    
     public void addCyclePCValue(long cycle, long pcValue){
         ProcessorState state;
         if (processorStatePerCycle.containsKey(cycle)){

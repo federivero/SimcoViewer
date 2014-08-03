@@ -45,6 +45,7 @@ public class MainJF extends javax.swing.JFrame {
     private static final String LINE_START_PC_VALUE_UPDATE = "PCValue-";
     private static final String LINE_START_IR_VALUE_UPDATE = "InstructionRegisterValue-";
     private static final String LINE_START_FLAGS_VALUE_UPDATE = "FlagsValue-";
+    private static final String LINE_START_SIMPLE_PROCESSOR_STEP = "SimpleProcessorStep-";
     
     // Simulable Objects properties
     private static final String SIMULABLE_PROPERTY_NAME = "name";
@@ -75,6 +76,8 @@ public class MainJF extends javax.swing.JFrame {
     
     // Processor properties
     private static final String PROCESSOR_PROPERTY_PROCESSOR_TYPE = "type";
+    private static final String PROCESSOR_PROPERTY_PROCESSOR_ID = "processorId";
+    private static final String PROCESSOR_PROPERTY_PROCESSOR_STAGE = "step";
     
     // Register properties
     private static final String REGISTER_PROPERTY_PROCESSOR_ID = "processorId";
@@ -121,7 +124,7 @@ public class MainJF extends javax.swing.JFrame {
      */
     public MainJF(String traceFileName) throws FileNotFoundException, IOException {
         
-        this.setName("Simco Viewer");
+        this.setTitle("Simco Viewer");
         // Initialize containers 
         viewers = new ArrayList();
         memoryDevices = new ArrayList();
@@ -391,7 +394,31 @@ public class MainJF extends javax.swing.JFrame {
                 Processor processor = processorMap.get(processorId);
                 processor.addRegisterValueEntry(currentCycle, registerNumber, registerType, registerValue);
                 
-            } else if (line.startsWith(LINE_START_PC_VALUE_UPDATE)){
+            } else if (line.startsWith(LINE_START_SIMPLE_PROCESSOR_STEP)){
+
+                // SimpleProcessor value update
+                String[] props = line.split("-");
+                long processorId = -1;
+                int processorStage = -1;
+                for (int i = 1; i < props.length; i++){
+                    propertyName = props[i].split(":")[0];
+                    propertyValue = props[i].split(":")[1];
+                    switch (propertyName) {
+                        case PROCESSOR_PROPERTY_PROCESSOR_ID:
+                            processorId = Long.parseLong(propertyValue);
+                            break;
+                        case PROCESSOR_PROPERTY_PROCESSOR_STAGE:
+                            processorStage = Integer.parseInt(propertyValue);
+                            break;
+                        default:
+                            // Message Id ??
+                            break;
+                    }
+                }
+                Processor processor = processorMap.get(processorId);
+                processor.addProcessorStep(processorStage,currentCycle);
+                
+            }else if (line.startsWith(LINE_START_PC_VALUE_UPDATE)){
                 // Program counter update line
                 String[] props = line.split("-");
                 long processorId = -1;
