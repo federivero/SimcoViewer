@@ -49,7 +49,7 @@ public class SimcoViewer {
         try{        
             new MainJF(traceFileName).setVisible(true);
         }catch(FileNotFoundException e){
-            System.out.println("No trace file found of name " + traceFileName);
+            System.out.println("SimCo viewer expects the path to the trace file as its only parameter");
         }catch(IOException e){
             e.printStackTrace();
         }
